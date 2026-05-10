@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Learning Literature Collection – Xiaodi Jin</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; font-size: 14px; color: #222; background: #fff; }
+  header { background: #fff; border-bottom: 1px solid #ccc; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; }
+  header h1 { font-size: 22px; font-weight: bold; }
+  header h1 span { color: #c00; }
+  .subtitle { font-size: 13px; color: #555; margin-left: 16px; }
+  .logo { font-size: 28px; font-weight: 900; color: #333; letter-spacing: -1px; }
+  .logo span { color: #c00; }
+  .container { display: flex; height: calc(100vh - 52px); }
+  .sidebar { width: 280px; min-width: 220px; border-right: 1px solid #ccc; padding: 16px; overflow-y: auto; background: #fafafa; }
+  .main { flex: 1; padding: 16px; overflow-y: auto; }
+  .section-title { font-size: 13px; font-weight: bold; color: #333; margin-bottom: 8px; cursor: pointer; user-select: none; }
+  .section-title::before { content: "▾ "; }
+  .filter-block { margin-bottom: 20px; border-bottom: 1px solid #e0e0e0; padding-bottom: 12px; }
+  .tag-cloud { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+  .tag { display: inline-block; background: #e8e8e8; border-radius: 3px; padding: 2px 7px; font-size: 12px; cursor: pointer; color: #333; transition: background 0.15s; }
+  .tag:hover { background: #ccc; }
+  .tag.active { background: #c00; color: #fff; }
+  .tag sub { font-size: 10px; }
+  .timeline-bar { background: #eee; border-radius: 2px; height: 60px; margin-bottom: 8px; position: relative; overflow: hidden; }
+  .timeline-inner { display: flex; align-items: flex-end; height: 100%; padding: 4px 4px 0; gap: 2px; }
+  .bar-year { flex: 1; background: #5a9; border-radius: 1px 1px 0 0; min-width: 6px; transition: background 0.2s; cursor: pointer; }
+  .bar-year:hover { background: #2a7; }
+  .bar-year.active { background: #c00; }
+  .year-labels { display: flex; justify-content: space-between; font-size: 10px; color: #888; }
+  .search-box { width: 100%; padding: 6px 10px; border: 1px solid #ccc; border-radius: 3px; font-size: 13px; margin-bottom: 16px; }
+  .count-bar { font-size: 13px; color: #555; margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+  .paper-card { border: 1px solid #ddd; border-radius: 4px; padding: 12px 14px; margin-bottom: 10px; background: #fff; display: flex; gap: 12px; }
+  .paper-card:hover { border-color: #aaa; }
+  .paper-num { font-size: 12px; color: #888; min-width: 20px; padding-top: 2px; }
+  .paper-body { flex: 1; }
+  .paper-title { font-size: 14px; font-weight: bold; color: #1a0dab; cursor: pointer; margin-bottom: 3px; }
+  .paper-title:hover { text-decoration: underline; }
+  .paper-meta { font-size: 12px; color: #555; margin-bottom: 5px; }
+  .paper-venue { font-size: 12px; color: #080; font-style: italic; margin-bottom: 5px; }
+  .paper-abstract { font-size: 12px; color: #333; line-height: 1.5; margin-bottom: 6px; display: none; }
+  .paper-abstract.open { display: block; }
+  .paper-tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
+  .paper-tag { background: #eef; border-radius: 3px; padding: 1px 6px; font-size: 11px; color: #336; }
+  .expand-btn { font-size: 11px; color: #888; cursor: pointer; border: none; background: none; padding: 0; }
+  .expand-btn:hover { color: #c00; }
+  .doi-link { font-size: 11px; color: #1a0dab; margin-left: 8px; }
+  @media (max-width: 600px) { .sidebar { display: none; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div style="display:flex; align-items:center;">
+    <h1>Deep Learning <span>Literature</span> Collection</h1>
+    <span class="subtitle">Xiaodi Jin · MSc 2024/25 · COMP4037</span>
+  </div>
+  <div class="logo">Sur<span>Vis</span></div>
+</header>
+
+<div class="container">
+  <div class="sidebar">
+    <div class="filter-block">
+      <div class="section-title">Timeline</div>
+      <div class="timeline-bar">
+        <div class="timeline-inner" id="timelineInner"></div>
+      </div>
+      <div class="year-labels"><span>2012</span><span>2020</span></div>
+    </div>
+
+    <div class="filter-block">
+      <div class="section-title">Category</div>
+      <div class="tag-cloud" id="catCloud"></div>
+    </div>
+
+    <div class="filter-block">
+      <div class="section-title">Evaluation</div>
+      <div class="tag-cloud" id="evalCloud"></div>
+    </div>
+
+    <div class="filter-block">
+      <div class="section-title">Authors</div>
+      <div class="tag-cloud" id="authorCloud"></div>
+    </div>
+
+    <div class="filter-block">
+      <div class="section-title">Venue</div>
+      <div class="tag-cloud" id="venueCloud"></div>
+    </div>
+  </div>
+
+  <div class="main">
+    <input class="search-box" type="text" id="searchBox" placeholder="search …" oninput="render()">
+    <div class="count-bar" id="countBar"></div>
+    <div id="paperList"></div>
+  </div>
+</div>
+
+<script>
+const papers = [
+  {
+    id:"lecun2015deep", year:2015,
+    title:"Deep Learning",
+    authors:"LeCun, Yann · Bengio, Yoshua · Hinton, Geoffrey",
+    venue:"Nature, Vol. 521, No. 7553, pp. 436–444",
+    doi:"10.1038/nature14539",
+    category:"foundational_architecture",
+    evaluation:"qualitative",
+    abstract:"A comprehensive overview of deep learning covering convolutional networks for image processing, recurrent networks for sequential data, and the backpropagation algorithm. The paper synthesises historical development and current state, emphasising how increased computational power, large datasets, and algorithmic advances enabled recent successes. Evaluation is primarily qualitative, drawing on extensive literature evidence."
+  },
+  {
+    id:"krizhevsky2012imagenet", year:2012,
+    title:"ImageNet Classification with Deep Convolutional Neural Networks",
+    authors:"Krizhevsky, Alex · Sutskever, Ilya · Hinton, Geoffrey E.",
+    venue:"NeurIPS 25, pp. 1097–1105",
+    doi:"",
+    url:"https://papers.nips.cc/paper/4824",
+    category:"foundational_architecture",
+    evaluation:"quantitative",
+    abstract:"Describes AlexNet, a deep CNN achieving a top-5 error of 15.3% on ImageNet (1.2 M images, 1000 classes), dramatically outperforming the previous best of 26.2%. Key innovations include ReLU activations, dropout regularisation, and multi-GPU training. Evaluation uses the ILSVRC-2012 benchmark with quantitative accuracy metrics."
+  },
+  {
+    id:"vaswani2017attention", year:2017,
+    title:"Attention Is All You Need",
+    authors:"Vaswani, Ashish · Shazeer, Noam · Parmar, Niki · Uszkoreit, Jakob · Jones, Llion · Gomez, Aidan N. · Kaiser, Lukasz · Polosukhin, Illia",
+    venue:"NeurIPS 30, pp. 5998–6008",
+    doi:"",
+    url:"https://arxiv.org/abs/1706.03762",
+    category:"foundational_architecture",
+    evaluation:"quantitative",
+    abstract:"Introduces the Transformer, a sequence transduction model based entirely on attention mechanisms, dispensing with recurrence and convolutions. Multi-head self-attention captures dependencies across all positions simultaneously. Achieves BLEU scores of 28.4 (EN→DE) and 41.0 (EN→FR) on WMT 2014, surpassing prior state-of-the-art while training substantially faster."
+  },
+  {
+    id:"goodfellow2014generative", year:2014,
+    title:"Generative Adversarial Nets",
+    authors:"Goodfellow, Ian · Pouget-Abadie, Jean · Mirza, Mehdi · Xu, Bing · Warde-Farley, David · Ozair, Sherjil · Courville, Aaron · Bengio, Yoshua",
+    venue:"NeurIPS 27, pp. 2672–2680",
+    doi:"",
+    url:"https://arxiv.org/abs/1406.2661",
+    category:"generative_model",
+    evaluation:"qualitative",
+    abstract:"Proposes Generative Adversarial Networks (GANs): simultaneously training a generator G and discriminator D in an adversarial min-max game. G learns to produce realistic samples; D learns to distinguish real from generated data. Evaluated qualitatively on MNIST, CIFAR-10, and Toronto Face Database through generated image quality."
+  },
+  {
+    id:"mnih2015human", year:2015,
+    title:"Human-Level Control through Deep Reinforcement Learning",
+    authors:"Mnih, Volodymyr · Kavukcuoglu, Koray · Silver, David · Rusu, Andrei A. · Veness, Joel · Bellemare, Marc G. · Hassabis, Demis",
+    venue:"Nature, Vol. 518, No. 7540, pp. 529–533",
+    doi:"10.1038/nature14236",
+    category:"reinforcement_learning",
+    evaluation:"quantitative",
+    abstract:"Presents DQN, combining Q-learning with deep CNNs to learn directly from raw Atari 2600 pixels. Experience replay and a separate target network stabilise training. Evaluated on 49 games: achieves human-level or superhuman performance on 29, using normalised scores as the primary quantitative metric."
+  },
+  {
+    id:"bordes2013translating", year:2013,
+    title:"Translating Embeddings for Modeling Multi-Relational Data",
+    authors:"Bordes, Antoine · Usunier, Nicolas · Garcia-Duran, Alberto · Weston, Jason · Yakhnenko, Oksana",
+    venue:"NeurIPS 26, pp. 2787–2795",
+    doi:"",
+    url:"https://arxiv.org/abs/1301.3485",
+    category:"specialized_representation",
+    evaluation:"quantitative",
+    abstract:"Introduces TransE, which models knowledge-graph relationships as translations in low-dimensional embedding space (h + r ≈ t). Evaluated on WN11 and FB11 via mean rank and Hits@10 for link prediction, demonstrating competitive accuracy with substantially lower parameter count than prior methods."
+  },
+  {
+    id:"kipf2017semi", year:2017,
+    title:"Semi-Supervised Classification with Graph Convolutional Networks",
+    authors:"Kipf, Thomas N. · Welling, Max",
+    venue:"ICLR 2017",
+    doi:"",
+    url:"https://arxiv.org/abs/1609.02907",
+    category:"specialized_representation",
+    evaluation:"quantitative",
+    abstract:"Presents Graph Convolutional Networks (GCNs), extending CNNs to graph-structured data via a localised first-order spectral convolution. Complexity scales linearly with graph edges. Evaluated on semi-supervised node classification on Cora, Citeseer, and Pubmed citation networks, outperforming prior methods."
+  },
+  {
+    id:"mcmahan2017communication", year:2017,
+    title:"Communication-Efficient Learning of Deep Networks from Decentralized Data",
+    authors:"McMahan, Brendan · Moore, Eider · Ramage, Daniel · Hampson, Seth · Agüera y Arcas, Blaise",
+    venue:"AISTATS, PMLR Vol. 54, pp. 1273–1282",
+    doi:"",
+    url:"https://proceedings.mlr.press/v54/mcmahan17a.html",
+    category:"specialized_representation",
+    evaluation:"quantitative",
+    abstract:"Introduces Federated Averaging (FedAvg), enabling collaborative deep-network training while keeping data on-device. Evaluated across five architectures and four datasets; reduces required communication rounds by 10–100× versus synchronous SGD, with ablation studies analysing client count and local-update hyperparameters."
+  },
+  {
+    id:"devlin2019bert", year:2019,
+    title:"BERT: Pre-Training of Deep Bidirectional Transformers for Language Understanding",
+    authors:"Devlin, Jacob · Chang, Ming-Wei · Lee, Kenton · Toutanova, Kristina",
+    venue:"NAACL-HLT 2019, Vol. 1, pp. 4171–4186",
+    doi:"10.18653/v1/N19-1423",
+    category:"pretrained_language_model",
+    evaluation:"quantitative",
+    abstract:"Presents BERT, pre-trained on masked language modelling and next-sentence prediction using bidirectional Transformers. Fine-tuned on 11 NLP tasks; achieves state-of-the-art on all, including +7.6% on GLUE and +12.5% on SQuAD v1.1 over previous best results. Comprehensive quantitative evaluation across diverse task types."
+  },
+  {
+    id:"brown2020language", year:2020,
+    title:"Language Models are Few-Shot Learners",
+    authors:"Brown, Tom · Mann, Benjamin · Ryder, Nick · Subbiah, Melanie · Kaplan, Jared D. · Dhariwal, Prafulla · Amodei, Dario",
+    venue:"NeurIPS 33, pp. 1877–1901",
+    doi:"",
+    url:"https://arxiv.org/abs/2005.14165",
+    category:"pretrained_language_model",
+    evaluation:"quantitative",
+    abstract:"Introduces GPT-3, a 175 B-parameter autoregressive language model. Evaluated on 24+ NLP tasks under zero-, one-, and few-shot settings without gradient updates; competitive with or surpassing fine-tuned baselines on many tasks. Also demonstrates emergent capabilities: arithmetic, news generation, and code synthesis."
+  }
+];
+
+const catLabels = {
+  foundational_architecture:"foundational architecture",
+  generative_model:"generative model",
+  reinforcement_learning:"reinforcement learning",
+  specialized_representation:"specialised representation",
+  pretrained_language_model:"pre-trained LM"
+};
+
+let activeYears = new Set();
+let activeCats = new Set();
+let activeEvals = new Set();
+let activeAuthors = new Set();
+let activeVenues = new Set();
+
+function allYears() { return [...new Set(papers.map(p=>p.year))].sort(); }
+
+function buildTimeline() {
+  const years = allYears();
+  const counts = {};
+  years.forEach(y => counts[y] = papers.filter(p=>p.year===y).length);
+  const max = Math.max(...Object.values(counts));
+  const el = document.getElementById('timelineInner');
+  el.innerHTML = '';
+  years.forEach(y => {
+    const h = Math.max(8, Math.round((counts[y]/max)*52));
+    const div = document.createElement('div');
+    div.className = 'bar-year' + (activeYears.has(y) ? ' active' : '');
+    div.style.height = h+'px';
+    div.title = y+': '+counts[y]+' paper(s)';
+    div.onclick = () => { activeYears.has(y)?activeYears.delete(y):activeYears.add(y); buildTimeline(); render(); };
+    el.appendChild(div);
+  });
+}
+
+function buildCloud(id, values, activeSet, labelFn) {
+  const counts = {};
+  values.forEach(v => counts[v] = (counts[v]||0)+1);
+  const el = document.getElementById(id);
+  el.innerHTML = '';
+  Object.entries(counts).sort((a,b)=>b[1]-a[1]).forEach(([v,c]) => {
+    const tag = document.createElement('span');
+    tag.className = 'tag' + (activeSet.has(v)?' active':'');
+    tag.innerHTML = (labelFn?labelFn(v):v) + '<sub>'+c+'</sub>';
+    tag.onclick = () => { activeSet.has(v)?activeSet.delete(v):activeSet.add(v); buildCloud(id,values,activeSet,labelFn); render(); };
+    el.appendChild(tag);
+  });
+}
+
+function buildClouds() {
+  buildCloud('catCloud', papers.map(p=>p.category), activeCats, v=>catLabels[v]||v);
+  buildCloud('evalCloud', papers.map(p=>p.evaluation), activeEvals);
+  const authorList = papers.flatMap(p=>p.authors.split(' · ').map(a=>a.split(',')[0].trim()));
+  buildCloud('authorCloud', authorList, activeAuthors);
+  const venueList = papers.map(p=>p.venue.split(',')[0].split(' ')[0]);
+  buildCloud('venueCloud', venueList, activeVenues);
+}
+
+function filtered() {
+  const q = document.getElementById('searchBox').value.toLowerCase();
+  return papers.filter(p => {
+    if (activeYears.size && !activeYears.has(p.year)) return false;
+    if (activeCats.size && !activeCats.has(p.category)) return false;
+    if (activeEvals.size && !activeEvals.has(p.evaluation)) return false;
+    if (activeAuthors.size && !p.authors.split(' · ').some(a=>activeAuthors.has(a.split(',')[0].trim()))) return false;
+    if (activeVenues.size && !activeVenues.has(p.venue.split(',')[0].split(' ')[0])) return false;
+    if (q && !p.title.toLowerCase().includes(q) && !p.authors.toLowerCase().includes(q) && !p.abstract.toLowerCase().includes(q)) return false;
+    return true;
+  });
+}
+
+function render() {
+  const list = filtered();
+  document.getElementById('countBar').textContent = list.length + ' publication' + (list.length!==1?'s':'') + ' — sorted by year';
+  const el = document.getElementById('paperList');
+  el.innerHTML = '';
+  list.forEach((p,i) => {
+    const card = document.createElement('div');
+    card.className = 'paper-card';
+    const doiHtml = p.doi
+      ? `<a class="doi-link" href="https://doi.org/${p.doi}" target="_blank">DOI</a>`
+      : p.url ? `<a class="doi-link" href="${p.url}" target="_blank">URL</a>` : '';
+    card.innerHTML = `
+      <div class="paper-num">${i+1}.</div>
+      <div class="paper-body">
+        <div class="paper-title" onclick="toggleAbstract('${p.id}')">${p.title}</div>
+        <div class="paper-meta">${p.authors} (${p.year})${doiHtml}</div>
+        <div class="paper-venue">${p.venue}</div>
+        <div class="paper-abstract" id="abs_${p.id}">${p.abstract}</div>
+        <div class="paper-tags">
+          <span class="paper-tag">type:${catLabels[p.category]||p.category}</span>
+          <span class="paper-tag">eval:${p.evaluation}</span>
+        </div>
+        <button class="expand-btn" onclick="toggleAbstract('${p.id}')">▶ abstract</button>
+      </div>`;
+    el.appendChild(card);
+  });
+}
+
+function toggleAbstract(id) {
+  const el = document.getElementById('abs_'+id);
+  const btn = el.nextElementSibling;
+  el.classList.toggle('open');
+  btn.textContent = el.classList.contains('open') ? '▼ abstract' : '▶ abstract';
+}
+
+buildTimeline();
+buildClouds();
+render();
+</script>
+</body>
+</html>
