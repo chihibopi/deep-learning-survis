@@ -1,0 +1,185 @@
+var papers = {
+	"lecun2015deep": {
+		"id": "lecun2015deep",
+		"title": "Deep Learning",
+		"authors": [
+			{"name": "LeCun, Yann"},
+			{"name": "Bengio, Yoshua"},
+			{"name": "Hinton, Geoffrey"}
+		],
+		"year": "2015",
+		"venue": "Nature",
+		"pages": "436--444",
+		"volume": "521",
+		"number": "7553",
+		"doi": "10.1038/nature14539",
+		"abstract": "A comprehensive overview of deep learning covering convolutional networks, recurrent networks, and backpropagation for image, text and speech processing.",
+		"type": "article",
+		"keywords": ["foundational_architecture", "deep_learning", "neural_networks", "qualitative"]
+	},
+	"krizhevsky2012imagenet": {
+		"id": "krizhevsky2012imagenet",
+		"title": "ImageNet Classification with Deep Convolutional Neural Networks",
+		"authors": [
+			{"name": "Krizhevsky, Alex"},
+			{"name": "Sutskever, Ilya"},
+			{"name": "Hinton, Geoffrey E."}
+		],
+		"year": "2012",
+		"venue": "Advances in Neural Information Processing Systems (NeurIPS)",
+		"pages": "1097--1105",
+		"volume": "25",
+		"abstract": "AlexNet achieves top-5 error rate of 15.3% on ImageNet using ReLU activations, dropout regularisation and GPU training.",
+		"type": "inproceedings",
+		"keywords": ["foundational_architecture", "convolutional_networks", "image_classification", "quantitative"]
+	},
+	"vaswani2017attention": {
+		"id": "vaswani2017attention",
+		"title": "Attention Is All You Need",
+		"authors": [
+			{"name": "Vaswani, Ashish"},
+			{"name": "Shazeer, Noam"},
+			{"name": "Parmar, Niki"},
+			{"name": "Uszkoreit, Jakob"},
+			{"name": "Jones, Llion"},
+			{"name": "Gomez, Aidan N."},
+			{"name": "Kaiser, Lukasz"},
+			{"name": "Polosukhin, Illia"}
+		],
+		"year": "2017",
+		"venue": "Advances in Neural Information Processing Systems (NeurIPS)",
+		"pages": "5998--6008",
+		"volume": "30",
+		"abstract": "Introduces the Transformer architecture based purely on attention mechanisms, achieving state-of-the-art BLEU scores on machine translation tasks.",
+		"type": "inproceedings",
+		"keywords": ["foundational_architecture", "transformer", "attention_mechanism", "quantitative"]
+	},
+	"goodfellow2014generative": {
+		"id": "goodfellow2014generative",
+		"title": "Generative Adversarial Nets",
+		"authors": [
+			{"name": "Goodfellow, Ian"},
+			{"name": "Pouget-Abadie, Jean"},
+			{"name": "Mirza, Mehdi"},
+			{"name": "Xu, Bing"},
+			{"name": "Warde-Farley, David"},
+			{"name": "Ozair, Sherjil"},
+			{"name": "Courville, Aaron"},
+			{"name": "Bengio, Yoshua"}
+		],
+		"year": "2014",
+		"venue": "Advances in Neural Information Processing Systems (NeurIPS)",
+		"pages": "2672--2680",
+		"volume": "27",
+		"abstract": "Proposes GANs: simultaneously training a generative model G and discriminative model D in an adversarial process to produce realistic samples.",
+		"type": "inproceedings",
+		"keywords": ["generative_model", "gan", "adversarial_training", "qualitative"]
+	},
+	"mnih2015human": {
+		"id": "mnih2015human",
+		"title": "Human-Level Control through Deep Reinforcement Learning",
+		"authors": [
+			{"name": "Mnih, Volodymyr"},
+			{"name": "Kavukcuoglu, Koray"},
+			{"name": "Silver, David"},
+			{"name": "Rusu, Andrei A."},
+			{"name": "Veness, Joel"},
+			{"name": "Bellemare, Marc G."},
+			{"name": "Hassabis, Demis"}
+		],
+		"year": "2015",
+		"venue": "Nature",
+		"pages": "529--533",
+		"volume": "518",
+		"number": "7540",
+		"doi": "10.1038/nature14236",
+		"abstract": "DQN learns to play 49 Atari games from raw pixels using Q-learning with experience replay, achieving human-level performance on 29 games.",
+		"type": "article",
+		"keywords": ["reinforcement_learning", "dqn", "deep_reinforcement_learning", "quantitative"]
+	},
+	"bordes2013translating": {
+		"id": "bordes2013translating",
+		"title": "Translating Embeddings for Modeling Multi-Relational Data",
+		"authors": [
+			{"name": "Bordes, Antoine"},
+			{"name": "Usunier, Nicolas"},
+			{"name": "Garcia-Duran, Alberto"},
+			{"name": "Weston, Jason"},
+			{"name": "Yakhnenko, Oksana"}
+		],
+		"year": "2013",
+		"venue": "Advances in Neural Information Processing Systems (NeurIPS)",
+		"pages": "2787--2795",
+		"volume": "26",
+		"abstract": "TransE models relationships in knowledge graphs as translations in embedding space, enabling efficient and scalable link prediction.",
+		"type": "inproceedings",
+		"keywords": ["specialized_representation", "knowledge_graph", "embedding", "quantitative"]
+	},
+	"kipf2017semi": {
+		"id": "kipf2017semi",
+		"title": "Semi-Supervised Classification with Graph Convolutional Networks",
+		"authors": [
+			{"name": "Kipf, Thomas N."},
+			{"name": "Welling, Max"}
+		],
+		"year": "2017",
+		"venue": "International Conference on Learning Representations (ICLR)",
+		"abstract": "GCN extends CNNs to graph-structured data via spectral convolutions, achieving superior node classification on citation networks.",
+		"type": "inproceedings",
+		"keywords": ["specialized_representation", "graph_neural_networks", "semi_supervised_learning", "quantitative"]
+	},
+	"mcmahan2017communication": {
+		"id": "mcmahan2017communication",
+		"title": "Communication-Efficient Learning of Deep Networks from Decentralized Data",
+		"authors": [
+			{"name": "McMahan, Brendan"},
+			{"name": "Moore, Eider"},
+			{"name": "Ramage, Daniel"},
+			{"name": "Hampson, Seth"},
+			{"name": "Aguera y Arcas, Blaise"}
+		],
+		"year": "2017",
+		"venue": "Artificial Intelligence and Statistics (AISTATS)",
+		"pages": "1273--1282",
+		"abstract": "Federated averaging enables distributed training of deep networks while keeping data on device, reducing communication rounds by 10-100x.",
+		"type": "inproceedings",
+		"keywords": ["specialized_representation", "federated_learning", "privacy", "quantitative"]
+	},
+	"devlin2019bert": {
+		"id": "devlin2019bert",
+		"title": "BERT: Pre-Training of Deep Bidirectional Transformers for Language Understanding",
+		"authors": [
+			{"name": "Devlin, Jacob"},
+			{"name": "Chang, Ming-Wei"},
+			{"name": "Lee, Kenton"},
+			{"name": "Toutanova, Kristina"}
+		],
+		"year": "2019",
+		"venue": "Proceedings of NAACL-HLT",
+		"pages": "4171--4186",
+		"doi": "10.18653/v1/N19-1423",
+		"abstract": "BERT pre-trains bidirectional transformers on masked language modelling and next sentence prediction, achieving state-of-the-art on 11 NLP tasks.",
+		"type": "inproceedings",
+		"keywords": ["pretrained_language_model", "bert", "transfer_learning", "quantitative"]
+	},
+	"brown2020language": {
+		"id": "brown2020language",
+		"title": "Language Models are Few-Shot Learners",
+		"authors": [
+			{"name": "Brown, Tom"},
+			{"name": "Mann, Benjamin"},
+			{"name": "Ryder, Nick"},
+			{"name": "Subbiah, Melanie"},
+			{"name": "Kaplan, Jared D."},
+			{"name": "Dhariwal, Prafulla"},
+			{"name": "Amodei, Dario"}
+		],
+		"year": "2020",
+		"venue": "Advances in Neural Information Processing Systems (NeurIPS)",
+		"pages": "1877--1901",
+		"volume": "33",
+		"abstract": "GPT-3, a 175B parameter language model, demonstrates strong few-shot performance across NLP tasks without any gradient updates or fine-tuning.",
+		"type": "inproceedings",
+		"keywords": ["pretrained_language_model", "gpt3", "few_shot_learning", "quantitative"]
+	}
+};
